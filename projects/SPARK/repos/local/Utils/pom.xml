@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cn.datashoe</groupId>
+        <artifactId>repos</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+
+    <artifactId>Utils</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.datashoe</groupId>
+            <artifactId>SparkMainShortCut</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threeten-extra</artifactId>
+            <version>0.9</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.scalanlp/breeze-viz -->
+        <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>breeze-viz_${scala.version}</artifactId>
+            <version>0.13.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-core -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-core</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-bmp -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-bmp</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-jpeg -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-pdf -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-pdf</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-pnm -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-pnm</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+    </dependencies>
+
+
+
+</project>

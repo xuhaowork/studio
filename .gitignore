@@ -1,0 +1,17 @@
+# java class files
+*.class
+
+# idea files
+*.iml
+*/*.iml
+*.idea
+.idea
+
+
+# out dir
+/myproject/out/
+
+# virtual studio
+.vs
+Debug
+x64

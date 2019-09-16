@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.datashoe</groupId>
+    <artifactId>repos</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- 开发者 -->
+    <developers>
+        <developer>
+            <id>datashoe</id>
+            <name>datashoe</name>
+            <email>xuhao7891@126.com</email>
+            <organization>Myself Studio</organization>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spark.version>2.3.2</spark.version>
+        <kafka.version>0-10</kafka.version>
+        <scala.version>2.11</scala.version>
+        <hadoop.version>2.6.0</hadoop.version>
+        <mysql.connector.version>5.1.39</mysql.connector.version>
+    </properties>
+
+
+    <!-- 模块 -->
+    <modules>
+        <!-- 分两个目录管理: 一个目录管理scala本机的机器学习项目一个目录管理spark的机器学习项目 -->
+
+        <!-- 以下是单向依赖的Module: 工具类/IO类/可视化类 -->
+        <!-- 工具类 -->
+        <module>local/Utils</module>
+        <!-- 可视化 -->
+        <module>local/Plot</module>
+
+        <!-- SPARK项目创建Main主类的快捷方式 -->
+        <module>spark/SparkMainShortCut</module>
+        <!-- SPARK工具类 -->
+        <module>spark/SparkUtils</module>
+
+        <!-- 以下是机器学习的Module: -->
+        <module>Spark/SparkTimeSeries</module>
+        <module>Spark/DataWrangling</module>
+        <module>Spark/Examples</module>
+        <module>Spark/BigDL</module>
+        <module>local/TimeSeries</module>
+    </modules>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-core -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>2.22.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-scala</artifactId>
+            <version>2.22.3</version>
+        </dependency>
+
+        <!-- scala -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_2.11</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
+        <!-- logging and testing -->
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test</artifactId>
+            <version>2.22.3</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scala.version}</artifactId>
+            <version>2.2.1</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_${scala.version}</artifactId>
+            <version>1.14.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>SparkMainShortCut</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>SparkUtils</artifactId>
+                    <groupId>cn.datashoe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.haifengl/smile-core -->
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-core</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>

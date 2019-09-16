@@ -1,0 +1,128 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      4359,        118]
+NotebookOptionsPosition[      3921,        101]
+NotebookOutlinePosition[      4277,        117]
+CellTagsIndexPosition[      4234,        114]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"a", " ", 
+      RowBox[{"Sin", "[", 
+       RowBox[{"b", " ", 
+        RowBox[{"(", 
+         RowBox[{"x", "+", "c"}], ")"}]}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", 
+       RowBox[{"2", " ", "Pi"}]}], "}"}], ",", 
+     RowBox[{"PlotRange", "\[Rule]", "1"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"b", ",", "1", ",", "20", ",", 
+     RowBox[{"Appearance", "\[Rule]", "\"\<Open\>\""}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"a", ",", "1"}], "}"}], ",", "0", ",", "1", ",", 
+     RowBox[{"Appearance", "\[Rule]", "\"\<Open\>\""}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"c", ",", "0", ",", 
+     RowBox[{"2", " ", "Pi"}], ",", 
+     RowBox[{"Appearance", "\[Rule]", "\"\<Open\>\""}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7548865724119997`*^9, 
+  3.754886572414*^9}},ExpressionUUID->"22d4b323-f354-45df-8aa4-1243aabca8b0"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`a$$ = 0.4894001007080078, $CellContext`b$$ =
+     7.01920223236084, $CellContext`c$$ = 6.187681221275064, Typeset`show$$ = 
+    True, Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"\:65e0\:6807\:9898\"", Typeset`specs$$ = {{
+      Hold[$CellContext`b$$], 1, 20}, {{
+       Hold[$CellContext`a$$], 1}, 0, 1}, {
+      Hold[$CellContext`c$$], 0, 2 Pi}}, Typeset`size$$ = {
+    360., {109., 116.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`b$5325$$ = 
+    0, $CellContext`a$5326$$ = 0, $CellContext`c$5327$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`a$$ = 1, $CellContext`b$$ = 
+        1, $CellContext`c$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`b$$, $CellContext`b$5325$$, 0], 
+        Hold[$CellContext`a$$, $CellContext`a$5326$$, 0], 
+        Hold[$CellContext`c$$, $CellContext`c$5327$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Plot[$CellContext`a$$ 
+        Sin[$CellContext`b$$ ($CellContext`x + $CellContext`c$$)], \
+{$CellContext`x, 0, 2 Pi}, PlotRange -> 1], 
+      "Specifications" :> {{$CellContext`b$$, 1, 20, Appearance -> 
+         "Open"}, {{$CellContext`a$$, 1}, 0, 1, Appearance -> 
+         "Open"}, {$CellContext`c$$, 0, 2 Pi, Appearance -> "Open"}}, 
+      "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{411., {221., 228.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.7548865740439997`*^9},ExpressionUUID->"cd85b8d5-8783-4d5e-b025-\
+25c56eb194ef"]
+}, Open  ]]
+},
+WindowSize->{759, 835},
+WindowMargins->{{Automatic, 266}, {6, Automatic}},
+FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (2017\:5e749\:670810\
+\:65e5)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 1022, 28, 119, "Input",ExpressionUUID->"22d4b323-f354-45df-8aa4-1243aabca8b0"],
+Cell[1605, 52, 2300, 46, 500, "Output",ExpressionUUID->"cd85b8d5-8783-4d5e-b025-25c56eb194ef"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

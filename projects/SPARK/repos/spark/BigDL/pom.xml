@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <BIGDL_VERSION>0.8.0</BIGDL_VERSION>
+    </properties>
+
+    <groupId>cn.datashoe</groupId>
+    <artifactId>BigDL</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.intel.analytics.bigdl/dist-spark-2.3.1-scala-2.11.8-all -->
+        <dependency>
+            <groupId>com.intel.analytics.bigdl</groupId>
+            <artifactId>dist-spark-2.3.1-scala-2.11.8-all</artifactId>
+            <version>0.7.2</version>
+        </dependency>
+    </dependencies>
+</project>

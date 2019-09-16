@@ -1,0 +1,39 @@
+package org.apache.spark.mllib.util
+
+import org.apache.spark.ml.linalg.{VectorUDT => mlVectorUDT}
+import org.apache.spark.mllib.linalg.{VectorUDT => mllibVectorUDT}
+import org.apache.spark.mllib.linalg.{BLAS, Vector}
+
+/**
+  * editor: xuhao
+  * date: 2018-03-26 08:30:00
+  */
+
+/**
+  * 提供一些将mllib.BLAS中的算法对外开放的一个接口
+  */
+
+object VectorBLAS {
+  /**
+    * y += a * x
+    */
+  def axpy(a: Double, x: Vector, y: Vector) = BLAS.axpy(a: Double, x: Vector, y: Vector)
+
+  /**
+    * x = a * x
+    */
+  def scal(a: Double, x: Vector) = BLAS.scal(a: Double, x: Vector)
+
+  /**
+    * dot(x, y)
+    */
+  def dot(x: Vector, y: Vector): Double = BLAS.dot(x, y)
+
+
+}
+
+/** Vector中用于两个VectorUDT的比对 */
+object VectorUDTUtils extends Serializable {
+  val mlVectorUDT = new mlVectorUDT
+  val mllibVectorUDT = new mllibVectorUDT
+}

@@ -1,0 +1,330 @@
+package org.apache.spark.sql.dbPartiiton
+
+import java.sql.{Connection, DriverManager, ResultSet, ResultSetMetaData, SQLException}
+
+import com.google.gson.Gson
+import com.zzjz.deepinsight.basic.BaseMain
+import com.zzjz.deepinsight.core.DataBasePartition.models.DynamicLoaderService
+import com.zzjz.deepinsight.core.DataBasePartition.partitioner.{ResConx, RowRDD}
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.catalyst.InternalRow
+import org.apache.spark.sql.catalyst.expressions.SpecificMutableRow
+import org.apache.spark.sql.catalyst.util.DateTimeUtils
+//import org.apache.spark.sql.dbPartiiton.service.ResConx
+import org.apache.spark.sql.jdbc.JdbcDialects
+import org.apache.spark.sql.types._
+import org.apache.spark.unsafe.types.UTF8String
+
+
+object Test extends BaseMain{
+  override def run(): Unit= {
+    val jsonparam =
+      """{"DBType":"Oracle","ConnType":"Host","Host":"192.168.11.251","Port":"1521","User":"scott","Passw":"zzjzorcl","Sid":"ORCL",
+        |"Base":"SCOTT","Table":"T_WIDEDF_FAIRRESULTSINFOCOPY","PartitionType":"rownum","Field":"id","DataType":"Long","Sample":"true",
+        |"Sql":"select *  from T_WIDEDF_FAIRRESULTSINFOCOPY","Down":"1","Up":"600","PartitionsNum":"5"}""".stripMargin
+
+    /*val jsonparam =
+      """{"DBType":"GBase8t","ConnType":"Host","Host":"192.168.11.27","Port":"9088","User":"informix","Passw":"informix","Sid":"gbase1",
+        |"Base":"zzjzweb","Table":"bai1w","PartitionType":"rownum","Field":"id","DataType":"Long","Sample":"true",
+        |"Sql":"select *  from bai1w","Down":"1","Up":"2000","PartitionsNum":"5"}""".stripMargin
+*/
+    val gson = new Gson()
+    val p: java.util.Map[String, String] = gson.fromJson(jsonparam, classOf[java.util.Map[String, String]])
+    val  url="jdbc:oracle:thin:@"+p.get("Host")+":"+p.get("Port")+":"+p.get("Sid")
+
+    /*val myrdd = sc.makeRDD(Seq(1))
+    sc.runJob(myrdd, (it:Iterator[Int])=>{
+      try{
+        val resConx = ResConx.getInstance().conx();
+        type Closeable = {
+          def close:Unit;
+        }
+        println("111111111")
+
+        resConx(8).init{
+          val con = new DynamicLoaderService().getConnection(p.get("DBType"), p.get("Host"), p.get("Port"), p.get("Base"), p.get("Sid"), p.get("User"), p.get("Passw"));
+          con.asInstanceOf[Closeable]
+        }
+        println("init pool size:" + resConx.count)
+
+      }catch{
+        case e : Throwable => 2
+      }
+    })
+*/
+    def RowDf(jsonparam:String):DataFrame={
+      //val conx4B = new java.util.concurrent.ConcurrentHashMap[String, ResPool]()
+      //val myconxBv = sc.broadcast(conx4B)
+      /*val service2 = new DynamicLoaderService()
+      val conn2=service2.getConnection(p.DBType, p.Host, p.Port.toString, p.Base, p.Sid, p.User, p.Passw)*/
+      def getCatalystType(
+                           sqlType: Int,
+                           precision: Int,
+                           scale: Int,
+                           signed: Boolean): DataType = {
+        val answer = sqlType match {
+          // scalastyle:off
+          case java.sql.Types.ARRAY         => null
+          case java.sql.Types.BIGINT        => if (signed) { LongType } else { DecimalType(20,0) }
+          case java.sql.Types.BINARY        => BinaryType
+          case java.sql.Types.BIT           => BooleanType // @see JdbcDialect for quirks
+          case java.sql.Types.BLOB          => BinaryType
+          case java.sql.Types.BOOLEAN       => BooleanType
+          case java.sql.Types.CHAR          => StringType
+          case java.sql.Types.CLOB          => StringType
+          case java.sql.Types.DATALINK      => null
+          case java.sql.Types.DATE          => DateType
+          case java.sql.Types.DECIMAL
+            if precision != 0 || scale != 0 => DecimalType.bounded(precision, scale)
+
+          case java.sql.Types.DECIMAL       => DecimalType.SYSTEM_DEFAULT
+          case java.sql.Types.DISTINCT      => null
+          case java.sql.Types.DOUBLE        => DoubleType
+          case java.sql.Types.FLOAT         => FloatType
+          case java.sql.Types.INTEGER       => if (signed) { IntegerType } else { LongType }
+          case java.sql.Types.JAVA_OBJECT   => null
+          case java.sql.Types.LONGNVARCHAR  => StringType
+          case java.sql.Types.LONGVARBINARY => BinaryType
+          case java.sql.Types.LONGVARCHAR   => StringType
+          case java.sql.Types.NCHAR         => StringType
+          case java.sql.Types.NCLOB         => StringType
+          case java.sql.Types.NULL          => null
+
+          case java.sql.Types.NUMERIC
+            if precision == 0  => DecimalType.bounded(38, 0)
+
+          case java.sql.Types.NUMERIC
+          if precision != 0 || scale != 0 => DecimalType.bounded(precision, scale)
+
+          case java.sql.Types.NUMERIC  =>
+            if (precision != 0 || scale != 0) { DecimalType.bounded(precision, scale)} else {StringType}
+
+          case java.sql.Types.NUMERIC
+            if precision == 0 =>  StringType
+
+          case java.sql.Types.NUMERIC       => DecimalType.SYSTEM_DEFAULT
+          case java.sql.Types.NVARCHAR      => StringType
+          case java.sql.Types.OTHER         => null
+          case java.sql.Types.REAL          => DoubleType
+          case java.sql.Types.REF           => StringType
+          case java.sql.Types.ROWID         => LongType
+          case java.sql.Types.SMALLINT      => IntegerType
+          case java.sql.Types.SQLXML        => StringType
+          case java.sql.Types.STRUCT        => StringType
+          case java.sql.Types.TIME          => TimestampType
+          case java.sql.Types.TIMESTAMP     => TimestampType
+          case java.sql.Types.TINYINT       => IntegerType
+          case java.sql.Types.VARBINARY     => BinaryType
+          case java.sql.Types.VARCHAR       => StringType
+          case _                            => null
+         // case _                            => StringType
+          // scalastyle:on
+        }
+        if (answer == null) throw new SQLException("Unsupported type " + sqlType)
+        answer
+      }
+
+
+      Class.forName("oracle.jdbc.driver.OracleDriver")
+      val conn2: Connection=DriverManager.getConnection(url, p.get("User"), p.get("Passw"))
+
+     /* Class.forName("com.informix.jdbc.IfxDriver")
+      val  url2="jdbc:informix-sqli://192.168.11.27:9088/zzjzweb:INFORMIXSERVER=gbase1"
+      val conn2: Connection=DriverManager.getConnection(url2,"informix","informix")*/
+
+      val stm = conn2.createStatement ()
+      var tem=""
+      var sql1=""
+      var rs:ResultSet=null
+      val dialect = JdbcDialects.get(url)
+
+      sql1=p.get("Sql")+"  where  0=1"
+      rs = stm.executeQuery(sql1)
+
+
+      val rsmd = rs.getMetaData
+      val ncols = rsmd.getColumnCount
+      val fields = new Array[StructField](ncols)
+      var i = 0
+      while (i < ncols) {
+        val columnName = rsmd.getColumnLabel(i + 1)
+        val dataType = rsmd.getColumnType(i + 1)
+        val typeName = rsmd.getColumnTypeName(i + 1)
+        val fieldSize = rsmd.getPrecision(i + 1)
+        val fieldScale = rsmd.getScale(i + 1)
+        val isSigned = rsmd.isSigned(i + 1)
+        val nullable = rsmd.isNullable(i + 1) != ResultSetMetaData.columnNoNulls
+        val metadata = new MetadataBuilder().putString("name", columnName)
+        val columnType =
+          dialect.getCatalystType(dataType, typeName, fieldSize, metadata).getOrElse(
+            getCatalystType(dataType, fieldSize, fieldScale, isSigned))
+        fields(i) = StructField(columnName, columnType, nullable, metadata.build())
+        i = i + 1
+      }
+
+      //  val structFields = new StructFieldService().structFields(conn2, p.DBType, p.Sql)
+      val schema = StructType(fields)
+
+
+
+
+      abstract class JDBCConversion
+      case object BooleanConversion extends JDBCConversion
+      case object DateConversion extends JDBCConversion
+      case class  DecimalConversion(precision: Int, scale: Int) extends JDBCConversion
+      case object DoubleConversion extends JDBCConversion
+      case object FloatConversion extends JDBCConversion
+      case object IntegerConversion extends JDBCConversion
+      case object LongConversion extends JDBCConversion
+      case object BinaryLongConversion extends JDBCConversion
+      case object StringConversion extends JDBCConversion
+      case object TimestampConversion extends JDBCConversion
+      case object BinaryConversion extends JDBCConversion
+
+      def getConversions(schema: StructType): Array[JDBCConversion] = {
+        /* private[sql] object Fixed {
+          def unapply(t: DecimalType): Option[(Int, Int)] = Some((t.precision, t.scale))
+       }*/
+
+        schema.fields.map(sf => sf.dataType match {
+          case BooleanType => BooleanConversion
+          case DateType => DateConversion
+          case DecimalType.Fixed(p, s) => DecimalConversion(p, s)
+          case DoubleType => DoubleConversion
+          case FloatType => FloatConversion
+          case IntegerType => IntegerConversion
+          case LongType =>
+            if (sf.metadata.contains("binarylong")) BinaryLongConversion else LongConversion
+          case StringType => StringConversion
+          case TimestampType => TimestampConversion
+          case BinaryType => BinaryConversion
+          case _ => throw new IllegalArgumentException(s"Unsupported field $sf")
+        }).toArray
+      }
+      val conversions = getConversions(schema)
+      val mutableRow = new SpecificMutableRow(schema.fields.map(x => x.dataType))
+
+
+
+
+      val rdd=new RowRDD[InternalRow](sc,
+        () => {
+          println("-----------------")
+          type Closeable = {
+            def close:Unit;
+          }
+
+          val resConx =  ResConx.getInstance().conx();
+          resConx(8).init{
+            val con = new DynamicLoaderService().getConnection(p.get("DBType"), p.get("Host"), p.get("Port"), p.get("Base"), p.get("Sid"), p.get("User"), p.get("Passw"));
+            con.asInstanceOf[Closeable]
+          }
+          println("pool size:" + resConx.count())
+
+         /* new org.apache.log4j.helpers.SyslogQuietWriter(new org.apache.log4j.helpers.SyslogWriter("192.168.15.200:514"), 600,
+            new org.apache.log4j.varia.FallbackErrorHandler()).write("pool size:" + resConx.count())*/
+
+          resConx.getRes.asInstanceOf[java.sql.Connection]
+
+
+          //resConx
+        },
+        //DBType:String,sql: String,lowerBound:Long,upperBound:Long,partiNum: Int,
+        p.get("DBType"), p.get("Sql"), p.get("Down").toLong, p.get("Up").toLong, p.get("PartitionsNum").toInt,
+        /*r => {
+          var res = Seq[String]()
+          var i = 1
+          val cc = r.getMetaData.getColumnCount
+
+          while (i < cc + 1) {
+
+            res = res :+ r.getString(i)
+            i += 1
+          }
+          Row.fromSeq(res)
+        }*/
+
+        rs => {
+          var i = 0
+          while (i < conversions.length) {
+            val pos = i + 1
+            conversions(i) match {
+              case BooleanConversion => mutableRow.setBoolean(i, rs.getBoolean(pos))
+              case DateConversion =>
+                // DateTimeUtils.fromJavaDate does not handle null value, so we need to check it.
+                val dateVal = rs.getDate(pos)
+                if (dateVal != null) {
+                  mutableRow.setInt(i, DateTimeUtils.fromJavaDate(dateVal))
+                } else {
+                  mutableRow.update(i, null)
+                }
+              // When connecting with Oracle DB through JDBC, the precision and scale of BigDecimal
+              // object returned by ResultSet.getBigDecimal is not correctly matched to the table
+              // schema reported by ResultSetMetaData.getPrecision and ResultSetMetaData.getScale.
+              // If inserting values like 19999 into a column with NUMBER(12, 2) type, you get through
+              // a BigDecimal object with scale as 0. But the dataframe schema has correct type as
+              // DecimalType(12, 2). Thus, after saving the dataframe into parquet file and then
+              // retrieve it, you will get wrong result 199.99.
+              // So it is needed to set precision and scale for Decimal based on JDBC metadata.
+              case DecimalConversion(p, s) =>
+                val decimalVal = rs.getBigDecimal(pos)
+                if (decimalVal == null) {
+                  mutableRow.update(i, null)
+                } else {
+                  mutableRow.update(i, Decimal(decimalVal, p, s))
+                }
+              case DoubleConversion => mutableRow.setDouble(i, rs.getDouble(pos))
+              case FloatConversion => mutableRow.setFloat(i, rs.getFloat(pos))
+              case IntegerConversion => mutableRow.setInt(i, rs.getInt(pos))
+              case LongConversion => mutableRow.setLong(i, rs.getLong(pos))
+              // TODO(davies): use getBytes for better performance, if the encoding is UTF-8
+              case StringConversion => mutableRow.update(i, UTF8String.fromString(rs.getString(pos)))
+              case TimestampConversion =>
+                val t = rs.getTimestamp(pos)
+                if (t != null) {
+                  mutableRow.setLong(i, DateTimeUtils.fromJavaTimestamp(t))
+                } else {
+                  mutableRow.update(i, null)
+                }
+              case BinaryConversion => mutableRow.update(i, rs.getBytes(pos))
+              case BinaryLongConversion => {
+                val bytes = rs.getBytes(pos)
+                var ans = 0L
+                var j = 0
+                while (j < bytes.size) {
+                  ans = 256 * ans + (255 & bytes(j))
+                  j = j + 1
+                }
+                mutableRow.setLong(i, ans)
+              }
+            }
+            if (rs.wasNull) mutableRow.setNullAt(i)
+            i = i + 1
+          }
+           mutableRow
+          //mutableRow.asInstanceOf[InternalRow]
+        }
+      )
+
+      //val  rdd2=rdd.map(x=>InternalRow)
+      //val  RDD=rdd.asInstanceOf[RDD[Row]]
+      val outDf = sqlc.internalCreateDataFrame(rdd, schema)
+      outDf
+    }
+    val t=RowDf(jsonparam)
+    t.show
+    //t.show
+    t.printSchema()
+
+     val myrdd = sc.makeRDD(Seq(1))
+    sc.runJob(myrdd, (it:Iterator[Int])=>{
+      try{
+        val resConx = ResConx.getInstance().conx()
+        resConx.close()
+      }catch{
+        case e : Throwable => 2
+      }
+    })
+
+  }
+}
